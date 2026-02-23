@@ -1,0 +1,111 @@
+@startuml
+' ===== Style (optionnel, mais rend le rendu plus lisible) =====
+hide circle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam shadowing false
+
+' ===== Enums =====
+enum PlaceType {
+  TO_VISIT
+  VISITED
+  MONUMENT
+  ACTIVITY
+  LANDSCAPE
+  POINT_OF_VIEW
+}
+
+enum GeoSource {
+  MANUAL
+  NOMINATIM
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+}
+
+' ===== Models / Tables =====
+
+class Place {
+  +id: String <<PK>>
+  +countryId: String <<FK>>
+  +name: String
+  +description: String?
+  +type: PlaceType
+  +visitedAt: DateTime?
+  +lat: Float
+  +lng: Float
+  +source: GeoSource
+  +nominatimPlaceId: String?
+  +nominatimName: String?
+}
+
+class Trip {
+  +id: String <<PK>>
+  +name: String
+  +description: String?
+  +startDate: DateTime?
+  +endDate: DateTime?
+}
+
+class TripStop {
+  +id: String <<PK>>
+  +tripId: String <<FK>>
+  +placeId: String? <<FK>>
+  +title: String?
+  +lat: Float?
+  +lng: Float?
+  +orderIndex: Int
+  --
+  +index: (tripId, orderIndex)
+}
+
+class Country {
+  +id: String <<PK>>
+  +iso2: String <<UQ>>
+  +name: String
+  +uiCoverImagePath: String?
+}
+
+class Vlog {
+  +id: String <<PK>>
+  +title: String
+  +urlOrPath: String
+  +date: DateTime
+  +description: String
+}
+
+class CountryVlog {
+  +countryId: String <<FK>>
+  +vlogId: String <<FK>>
+  --
+  +pk: (countryId, vlogId)
+}
+
+class Media {
+  +id: String <<PK>>
+  +placeId: String <<FK>>
+  +mediaType: MediaType
+  +filePath: String
+  +caption: String?
+  +takenAt: DateTime?
+  +sortOrder: Int
+}
+
+' ===== Relationships (cardinalités) =====
+Country "1" --> "0..*" Place : places\n(onDelete: CASCADE)
+Place "1" --> "0..*" Media : media\n(onDelete: CASCADE)
+
+Trip "1" --> "2..*" TripStop : stops\n(onDelete: CASCADE)
+Place "0..1" <-- "0..*" TripStop : place\n(onDelete: SET_NULL)
+
+Country "1" --> "0..*" CountryVlog : links
+Vlog "1" --> "0..*" CountryVlog : links
+
+' ===== Enum usage (optionnel) =====
+Place ..> PlaceType
+Place ..> GeoSource
+Media ..> MediaType
+
+@enduml

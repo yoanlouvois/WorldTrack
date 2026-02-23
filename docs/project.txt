@@ -1,0 +1,59 @@
+travel-map/
+├─ package.json
+├─ .env
+├─ README.md
+│
+├─ prisma/
+│  ├─ schema.prisma
+│  ├─ dev.db
+│  └─ migrations/
+│
+├─ src/                          # BACK-END (Express + Prisma)
+│  ├─ server.js                  # démarre le serveur
+│  ├─ app.js                     # express app + middlewares + routes
+│  ├─ prisma.js                  # PrismaClient singleton
+│  ├─ routes.js                  # centralise toutes les routes /api
+│  ├─ errors.js                  # notFound + errorHandler + async wrapper
+│  │
+│  ├─ controllers/               # HTTP layer (req/res)
+│  │  ├─ places.controller.js
+│  │  ├─ countries.controller.js
+│  │  ├─ trips.controller.js
+│  │  ├─ vlogs.controller.js
+│  │  ├─ media.controller.js
+│  │  ├─ geocode.controller.js
+│  │  └─ stats.controller.js
+│  │
+│  ├─ services/                  # logique + Prisma
+│  │  ├─ places.service.js
+│  │  ├─ countries.service.js
+│  │  ├─ trips.service.js
+│  │  ├─ vlogs.service.js
+│  │  ├─ media.service.js
+│  │  ├─ geocode.service.js
+│  │  └─ stats.service.js
+│  │
+│  └─ upload/                    # config upload (photos/vidéos)
+│     └─ multer.js
+│
+└─ public/                       # FRONT-END (Bootstrap + Leaflet)
+   ├─ index.html                 # écran principal (carte)
+   ├─ place.html                 # écran lieu
+   ├─ country.html               # écran pays
+   ├─ account.html               # écran compte (stats/vlogs/souvenirs)
+   │
+   ├─ css/
+   │  └─ style.css
+   │
+   ├─ js/
+   │  ├─ api.js                  # wrapper fetch + fonctions API
+   │  ├─ common.js               # helpers UI (toast, spinner, query params)
+   │  ├─ index.js                # logique écran principal
+   │  ├─ place.js                # logique écran lieu
+   │  ├─ country.js              # logique écran pays
+   │  └─ account.js              # logique écran compte
+   │
+   └─ uploads/                   # fichiers stockés localement
+      ├─ places/
+      ├─ countries/
+      └─ vlogs/

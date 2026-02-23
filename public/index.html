@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Travel Map</title>
+
+  <!-- Bootstrap (local) -->
+  <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
+  <!-- Leaflet (local) -->
+  <link rel="stylesheet" href="/leaflet/leaflet.css" />
+
+  <style>
+    html, body { height: 100%; margin: 0; }
+    body { overflow: hidden; }
+
+    /* Header + contenu plein écran */
+    .app {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header { flex: 0 0 auto; }
+
+    /* Layout 2 panneaux: sidebar + map */
+    .main {
+      flex: 1 1 auto;
+      display: grid;
+      grid-template-columns: 0px 1fr; /* sidebar fermée par défaut */
+      transition: grid-template-columns 180ms ease;
+      height: 100%;
+      min-height: 0; /* important pour que #map prenne bien la place */
+    }
+
+    .main.sidebar-open {
+      grid-template-columns: 360px 1fr; /* largeur du panneau ouvert */
+    }
+
+    /* Sidebar */
+    .sidebar {
+      height: 100%;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      background: #0b1220; /* bleu nuit */
+      color: #e5e7eb;
+      overflow: hidden; /* évite le contenu visible quand fermé */
+    }
+
+    .sidebar-inner {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      padding: 12px;
+      gap: 12px;
+    }
+
+    /* Map */
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+
+    /* Navbar recherche dans la sidebar */
+    .sidebar .navbar {
+      border-radius: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+
+    <!-- HEADER -->
+    <header class="bg-dark border-bottom">
+      <div class="container-fluid py-2 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <button id="btnMenu" class="btn btn-outline-light btn-sm" type="button">
+            ☰ Menu
+          </button>
+          <span class="text-white-50 small">Travel Map</span>
+        </div>
+
+        <!-- Boutons à droite (pas de click géré pour l'instant) -->
+        <div class="d-flex gap-2">
+          <button class="btn btn-outline-light btn-sm" type="button">Mon profil</button>
+          <button class="btn btn-outline-light btn-sm" type="button">Mes pays</button>
+          <button class="btn btn-outline-light btn-sm" type="button">Mes places</button>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN (sidebar + map) -->
+    <div id="mainLayout" class="main">
+
+      <!-- SIDEBAR (fermé/ouvert) -->
+      <aside class="sidebar">
+        <div class="sidebar-inner">
+
+          <!-- Navbar search -->
+          <nav class="navbar navbar-light bg-light px-2">
+            <form class="d-flex w-100" role="search" onsubmit="return false;">
+              <input
+                id="searchInput"
+                class="form-control form-control-sm me-2"
+                type="search"
+                placeholder="Rechercher un lieu..."
+                aria-label="Search"
+              />
+              <button id="btnSearch" class="btn btn-primary btn-sm" type="button">Go</button>
+            </form>
+          </nav>
+
+          <!-- Zone “future contenu” -->
+          <div class="small text-white-50">
+            Ici tu mettras ensuite :
+            <ul class="mt-2">
+              <li>filtres</li>
+              <li>résultats</li>
+              <li>actions road-trip</li>
+              <li>etc.</li>
+            </ul>
+          </div>
+
+          <div class="mt-auto d-flex justify-content-end">
+            <button id="btnCloseMenu" class="btn btn-outline-light btn-sm" type="button">
+              Fermer
+            </button>
+          </div>
+
+        </div>
+      </aside>
+
+      <!-- MAP -->
+      <main>
+        <div id="map"></div>
+      </main>
+
+    </div>
+  </div>
+
+  <script src="/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="/leaflet/leaflet.js"></script>
+  <script src="/js/index.js"></script>
+</body>
+</html>
