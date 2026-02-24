@@ -1,0 +1,113 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+enum PlaceType {
+  TO_VISIT
+  VISITED
+  MONUMENT
+  ACTIVITY
+  LANDSCAPE
+  POINT_OF_VIEW
+}
+
+enum GeoSource {
+  MANUAL
+  NOMINATIM
+}
+
+enum MediaType {
+  PHOTO
+  VIDEO
+}
+
+model Country {
+  id               String  @id @default(cuid())
+  iso2             String  @unique
+  name             String
+  uiCoverImagePath String?
+
+  places           Place[]
+  countryVlogs     CountryVlog[]
+}
+
+model Place {
+  id               String   @id @default(cuid())
+  countryId        String
+  country          Country  @relation(fields: [countryId], references: [id], onDelete: Cascade)
+
+  name             String
+  description      String?
+  type             PlaceType
+  visitedAt        DateTime?
+  lat              Float
+  lng              Float
+  source           GeoSource
+  nominatimPlaceId String?
+  nominatimName    String?
+
+  media            Media[]
+  tripStops        TripStop[]
+}
+
+model Media {
+  id        String    @id @default(cuid())
+  placeId   String
+  place     Place     @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  mediaType MediaType
+  filePath  String
+  caption   String?
+  takenAt   DateTime?
+  sortOrder Int
+}
+
+model Trip {
+  id          String    @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime?
+  endDate     DateTime?
+
+  stops       TripStop[]
+}
+
+model TripStop {
+  id         String  @id @default(cuid())
+  tripId     String
+  trip       Trip    @relation(fields: [tripId], references: [id], onDelete: Cascade)
+
+  placeId    String?
+  place      Place?  @relation(fields: [placeId], references: [id], onDelete: SetNull)
+
+  title      String?
+  lat        Float?
+  lng        Float?
+  orderIndex Int
+
+  @@index([tripId, orderIndex])
+}
+
+model Vlog {
+  id          String        @id @default(cuid())
+  title       String
+  urlOrPath   String
+  date        DateTime
+  description String
+
+  countryVlogs CountryVlog[]
+}
+
+model CountryVlog {
+  countryId String
+  vlogId    String
+
+  country   Country @relation(fields: [countryId], references: [id], onDelete: Cascade)
+  vlog      Vlog    @relation(fields: [vlogId], references: [id], onDelete: Cascade)
+
+  @@id([countryId, vlogId])
+}
