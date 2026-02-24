@@ -1,6 +1,8 @@
 const express = require('express')
+
 const countriesController = require('./controllers/countries.controller')
 const vlogsController = require('./controllers/vlogs.controller')
+const placesController = require('./controllers/places.controller')
 
 const router = express.Router()
 
@@ -22,5 +24,12 @@ router.delete('/vlogs/:id', vlogsController.remove)
 router.post('/vlogs/:id/countries/:countryId', vlogsController.linkToCountry)
 router.delete('/vlogs/:id/countries/:countryId', vlogsController.unlinkFromCountry)
 router.put('/vlogs/:id/countries', vlogsController.setCountries)
+
+// Places
+router.get('/places', placesController.list)
+router.get('/places/:id', placesController.getById)
+router.post('/places', placesController.create)
+router.patch('/places/:id', placesController.update)
+router.delete('/places/:id', placesController.remove)
 
 module.exports = router
